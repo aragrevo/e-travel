@@ -1,0 +1,34 @@
+{
+  "avianca": {
+    "27102022": [
+      {
+        "passengers": 3,
+        "price": 12296410
+      }
+    ]
+  },
+  "airEuropa": {
+    "27102022": [
+      {
+        "passengers": 3,
+        "price": 12296410
+      }
+    ],
+    "24102022": [
+      {
+        "passengers": 1,
+        "price": 4895900
+      }
+    ],
+    "28102022": [
+      {
+        "passengers": 1,
+        "price": 4198750
+      },
+      {
+        "passengers": 3,
+        "price": 12126700
+      }
+    ]
+  }
+}
