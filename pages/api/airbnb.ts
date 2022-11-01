@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Locator } from "playwright";
+import { Browser, Locator, Page } from "playwright";
 
 import { Place } from "@model/place";
 
@@ -31,12 +31,12 @@ export default async function handler(
   }
 }
 
-const scrapper = async (page) => {
+const scrapper = async (page: Page) => {
   const rows: Locator = await page.locator(FIRST_CLASS);
   const places: Place[] = await rows.evaluateAll((list: HTMLElement[]) =>
     list.map((element) => {
       const link = element.querySelector("a")?.href || "";
-
+      const id = link.split("?")[0].split("/").pop() || "";
       const title = element.querySelector(".t1jojoys")?.textContent || "";
       const description = element.querySelector(".t6mzqp7")?.textContent || "";
       const rooms =
@@ -45,6 +45,7 @@ const scrapper = async (page) => {
       const total = element.querySelector("._tt122m")?.textContent || "";
       const image = element.querySelector("img")?.src || "";
       return {
+        id,
         link,
         title,
         description,
@@ -59,7 +60,7 @@ const scrapper = async (page) => {
 };
 
 const getPlaces = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  let browser;
+  let browser: Browser;
   try {
     const { city, startDate, endDate } = JSON.parse(req.body);
     const url = `${baseUrl}/s/${city}/homes?place_id=ChIJQZzvPeA3Ig0R3vSp3Zgijoc&refinement_paths%5B%5D=%2Fhomes&checkin=2023-05-09&checkout=2023-05-16&date_picker_type=calendar&adults=2&children=1&search_type=filter_change&tab_id=home_tab&query=Figueira%20da%20Foz&flexible_trip_lengths%5B%5D=one_week&price_filter_num_nights=14&source=structured_search_input_header&price_max=66`;
@@ -71,27 +72,11 @@ const getPlaces = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     await page.goto(url);
     await page.waitForTimeout(10000);
     const nav: Locator = await page.locator("._833p2h");
-    const places: Place[] = [];
-    const scrapperPlaces = await scrapper(page);
-    places.push(...scrapperPlaces);
-    // await nav.evaluateAll(async (items: HTMLElement[]) => {
-    //   for await (const el of items) {
-    //     console.log("newpage");
-    //     const page = await browser.newPage();
-    //     await page.goto(`${baseUrl}${el.getAttribute("href")}`);
-    //     await page.waitForTimeout(10000);
-    //     const pla = await scrapper(page);
-    //     places.push(...pla);
-    //   }
-    //   //   items.forEach(async (el) => {
-    //   //     return el.getAttribute("href");
-    //   //   });
-    // });
-    console.log("close");
+    const places: Place[] = await scrapper(page);
 
     await browser.close();
 
-    const sorted = [...places].sort((a, b) => {
+    const sorted = places.sort((a, b) => {
       const aPrice = a.price.split(/\s|&nbsp;/g)[0];
       const bPrice = b.price.split(/\s|&nbsp;/g)[0];
       return +aPrice - +bPrice;
@@ -102,8 +87,7 @@ const getPlaces = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       places: sorted,
     });
   } catch (e) {
-    // 5
-    await browser.close();
+    await browser?.close();
     res.statusCode = 404;
     return res.json({
       error: "Error" + e,

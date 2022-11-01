@@ -111,6 +111,9 @@ export default function Home() {
     document.documentElement.classList.toggle("dark");
   };
 
+  // TODO: get form data
+  // TODO: edit favorites
+  // TODO: get out favorite logic
   return (
     <>
       <Head>
@@ -128,13 +131,20 @@ export default function Home() {
           Follow your travel
         </h1>
         <ol className="list-decimal">
-          <li>Select airplanes to follow price</li>
-          <li>Select your country where do you like to go</li>
+          <li>What do you want to do</li>
+          <li>Where do you like to go</li>
           <li>Where dates are you traveling</li>
         </ol>
         <div className="container mt-3 flex flex-col items-center justify-center text-center xl:max-w-5xl">
-          <Select />
-          <Select className="mt-2" />
+          <Select
+            options={["Airbnb"]}
+            placeholder="Which page do you want to scrap"
+          />
+          <Select
+            className="mt-2"
+            placeholder="Where is you going?"
+            options={["Figueira-da-Foz"]}
+          />
           <div className="mt-2 flex w-full flex-row">
             <Input type="date" className="mr-1" />
             <Input type="date" className="ml-1" />
@@ -158,7 +168,7 @@ export default function Home() {
                   }
             }
           >
-            Run
+            Run scrapper
           </Button>
           <Grid className="my-4">
             {airbnbData.map((place) => (

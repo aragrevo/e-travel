@@ -1,9 +1,10 @@
 export interface Place {
-  link: string;
-  title: string;
   description: string;
-  rooms: string;
-  price: string;
+  id: string;
   image: string;
+  link: string;
+  price: string;
+  rooms: string;
+  title: string;
   total?: string;
 }

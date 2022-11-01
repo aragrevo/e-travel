@@ -1,14 +1,18 @@
-import Image from "next/image";
 import { FC, useState } from "react";
+import Image from "next/image";
+import { FCClassName } from "@model/fc-classname";
 import { Input } from "./Input";
 
-const options = ["Avianca", "AirEuropa"];
-
-interface Props {
-  className?: string;
+interface Props extends FCClassName {
+  options?: string[];
+  placeholder?: string;
 }
 
-export const Select: FC<Props> = ({ className }) => {
+export const Select: FC<Props> = ({
+  options = [],
+  className = "",
+  placeholder,
+}) => {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState("");
 
@@ -24,7 +28,7 @@ export const Select: FC<Props> = ({ className }) => {
           <div className="relative inline-flex w-full align-middle">
             <Input
               className="z-10 cursor-pointer bg-transparent caret-transparent"
-              placeholder="Select a item"
+              placeholder={placeholder || "Select a item"}
               onClick={() => setShow((val) => !val)}
               value={value}
               disabled
@@ -41,7 +45,7 @@ export const Select: FC<Props> = ({ className }) => {
           </div>
           <ul
             className={
-              (show ? "block " : "hidden ") +
+              (show && options.length > 0 ? "block " : "hidden ") +
               "absolute inset-x-0 z-50 list-none rounded bg-white py-2 text-left text-sm shadow transition-all duration-1000 ease-in-out dark:bg-gray-700"
             }
           >
