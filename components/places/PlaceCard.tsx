@@ -7,17 +7,17 @@ import { toCurrency } from "../../utils";
 
 interface Props extends FCClassName {
   place: Place;
+  btnText: string;
+  toggleFavorite: () => void;
 }
 const EURO = 4859;
 
-export const PlaceCard: FC<Props> = ({ className = "", place }) => {
-  const [favorites, setFavorites] = useState<Place[]>([]);
-  useEffect(() => {
-    const favString = window.localStorage.getItem("fav") || "[]";
-    const favList: Place[] = JSON.parse(favString);
-    setFavorites(favList);
-  }, []);
-
+export const PlaceCard: FC<Props> = ({
+  className = "",
+  place,
+  btnText,
+  toggleFavorite,
+}) => {
   return (
     <Card className={className} hovereable href={place.link}>
       <>
@@ -48,16 +48,9 @@ export const PlaceCard: FC<Props> = ({ className = "", place }) => {
                 toCurrency(+place.total.split(/\s|&nbsp;/g)[0] * EURO)}
             </p>
           </div>
-          <Button
-            className="z-50 mt-2 w-full"
-            onClick={() => {
-              const newList = favorites.filter((f) => f.id !== place.id);
-              newList.push(place);
-              window.localStorage.setItem("fav", JSON.stringify(newList));
-              setFavorites(newList);
-            }}
-          >
-            {favorites.find((f) => f.id === place.id) ? "Saved" : "Save"}
+
+          <Button className="z-50 mt-2 w-full" onClick={() => toggleFavorite()}>
+            {btnText}
           </Button>
         </div>
       </>

@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 
 interface Props {
-  action: () => void;
+  action: (value: boolean) => void;
   className?: string;
 }
 
@@ -23,7 +23,7 @@ export const Switch: FC<Props> = ({ action, className }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   setOpenTab(false);
-                  action();
+                  action(false);
                 }}
               >
                 <i className="fas fa-space-shuttle mr-1 text-base"></i> Off
@@ -40,7 +40,7 @@ export const Switch: FC<Props> = ({ action, className }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   setOpenTab(true);
-                  action();
+                  action(true);
                 }}
               >
                 <i className="fas fa-cog mr-1 text-base"></i> On

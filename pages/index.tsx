@@ -1,12 +1,14 @@
 import { useState } from "react";
-import Head from "next/head";
 
-import { Grid, Switch } from "@components/ui";
+import { Grid, Layout } from "@components/ui";
 import { PlaceCard } from "@components/places";
 import { FormScrapper } from "@components/home";
 
+import { useLocalStorage } from "@hooks/index";
+
 import { Flight } from "@model/flight";
 import { Place } from "@model/place";
+import { LocalStorageType } from "@model/local-storage-types";
 
 const flights: Flight[] = [
   {
@@ -108,45 +110,43 @@ const flights: Flight[] = [
 
 export default function Home() {
   const [airbnbData, setAirbnbData] = useState<Place[]>([]);
-
-  const changeDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
-  };
+  const [favorites, setFavorites] = useLocalStorage<Place[]>(
+    LocalStorageType.Favorites,
+    []
+  );
 
   // TODO: list searches
-  // TODO: edit favorites
-  // TODO: get out favorite logic
   // TODO: get euro price
   return (
-    <>
-      <Head>
-        <title>E Travel</title>
-        <meta name="description" content="Follow your travel" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Layout>
+      <h1 className="mb-2 text-3xl font-bold dark:text-white">
+        Follow your travel
+      </h1>
+      <ol className="list-decimal">
+        <li>What do you want to do</li>
+        <li>Where do you like to go</li>
+        <li>Where dates are you traveling</li>
+      </ol>
+      <div className="container mt-3 flex flex-col items-center justify-center text-center xl:max-w-5xl">
+        <FormScrapper setData={setAirbnbData} />
+        <Grid className="my-4">
+          {airbnbData.map((place) => (
+            <PlaceCard
+              place={place}
+              key={place.link}
+              btnText={
+                !favorites.find((f) => f.id === place.id) ? "Save" : "Saved"
+              }
+              toggleFavorite={() => {
+                const newList = favorites.filter((f) => f.id !== place.id);
+                newList.push(place);
+                setFavorites(newList);
+              }}
+            />
+          ))}
+        </Grid>
 
-      <main className="flex min-h-screen flex-1 flex-col items-center justify-center bg-white dark:bg-gray-900">
-        <Switch
-          className="absolute top-0 right-0 mt-2 mr-2"
-          action={changeDarkMode}
-        />
-
-        <h1 className="mb-2 text-3xl font-bold dark:text-white">
-          Follow your travel
-        </h1>
-        <ol className="list-decimal">
-          <li>What do you want to do</li>
-          <li>Where do you like to go</li>
-          <li>Where dates are you traveling</li>
-        </ol>
-        <div className="container mt-3 flex flex-col items-center justify-center text-center xl:max-w-5xl">
-          <FormScrapper setData={setAirbnbData} />
-          <Grid className="my-4">
-            {airbnbData.map((place) => (
-              <PlaceCard place={place} key={place.link} />
-            ))}
-          </Grid>
-          {/* <section className="my-2 mb-4 w-full">
+        {/* <section className="my-2 mb-4 w-full">
             {[].map(({ company, dates }) => {
               return (
                 <div key={company}>
@@ -197,8 +197,7 @@ export default function Home() {
               );
             })}
           </section> */}
-        </div>
-      </main>
-    </>
+      </div>
+    </Layout>
   );
 }
