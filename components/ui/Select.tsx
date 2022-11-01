@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FCClassName } from "@model/fc-classname";
 import { Input } from "./Input";
@@ -6,18 +6,36 @@ import { Input } from "./Input";
 interface Props extends FCClassName {
   options?: string[];
   placeholder?: string;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 export const Select: FC<Props> = ({
   options = [],
   className = "",
   placeholder,
+  value,
+  onChange,
 }) => {
   const [show, setShow] = useState(false);
-  const [value, setValue] = useState("");
+  const menuRef = useRef<any>(null);
 
-  const onChange = (option: string) => {
-    setValue(option);
+  useEffect(() => {
+    const handleClick = (event: any) => {
+      if (menuRef.current && !menuRef.current.contains(event.target) && show) {
+        setShow(false);
+      }
+    };
+
+    document.addEventListener("click", handleClick, true);
+
+    return () => {
+      document.removeEventListener("click", handleClick, true);
+    };
+  }, [show]);
+
+  const onChangeOption = (option: string) => {
+    onChange(option);
     setShow(false);
   };
 
@@ -25,12 +43,18 @@ export const Select: FC<Props> = ({
     <>
       <div className={`${className} flex w-full flex-wrap`}>
         <div className="relative w-full">
-          <div className="relative inline-flex w-full align-middle">
+          <div
+            className="relative inline-flex w-full align-middle"
+            ref={menuRef}
+          >
             <Input
               className="z-10 cursor-pointer bg-transparent caret-transparent"
               placeholder={placeholder || "Select a item"}
-              onClick={() => setShow((val) => !val)}
+              onClick={() => {
+                setShow((val) => !val);
+              }}
               value={value}
+              onChange={onChange}
               disabled
             />
             <picture className="absolute top-1/2 right-0 mr-2 h-auto w-6 -translate-y-1/2 ">
@@ -45,13 +69,18 @@ export const Select: FC<Props> = ({
           </div>
           <ul
             className={
-              (show && options.length > 0 ? "block " : "hidden ") +
-              "absolute inset-x-0 z-50 list-none rounded bg-white py-2 text-left text-sm shadow transition-all duration-1000 ease-in-out dark:bg-gray-700"
+              (show && options.length > 0
+                ? "z-50 opacity-100 "
+                : "-z-10 opacity-0 ") +
+              "absolute inset-x-0 list-none rounded bg-white py-2 text-left text-sm shadow transition-all duration-300 dark:bg-gray-700"
             }
           >
             {options.map((op) => (
               <li
-                onClick={() => onChange(op)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChangeOption(op);
+                }}
                 key={op}
                 className={
                   (value === op

@@ -1,10 +1,12 @@
-import Head from "next/head";
-import { Button, Grid, Input, Select, Switch } from "@components/ui";
-import { formatDate, getWeekDay, toCurrency } from "../utils";
-import { Flight } from "@model/flight";
 import { useState } from "react";
-import { Place } from "@model/place";
+import Head from "next/head";
+
+import { Grid, Switch } from "@components/ui";
 import { PlaceCard } from "@components/places";
+import { FormScrapper } from "@components/home";
+
+import { Flight } from "@model/flight";
+import { Place } from "@model/place";
 
 const flights: Flight[] = [
   {
@@ -106,14 +108,15 @@ const flights: Flight[] = [
 
 export default function Home() {
   const [airbnbData, setAirbnbData] = useState<Place[]>([]);
-  const [loading, setLoading] = useState(false);
+
   const changeDarkMode = () => {
     document.documentElement.classList.toggle("dark");
   };
 
-  // TODO: get form data
+  // TODO: list searches
   // TODO: edit favorites
   // TODO: get out favorite logic
+  // TODO: get euro price
   return (
     <>
       <Head>
@@ -127,6 +130,7 @@ export default function Home() {
           className="absolute top-0 right-0 mt-2 mr-2"
           action={changeDarkMode}
         />
+
         <h1 className="mb-2 text-3xl font-bold dark:text-white">
           Follow your travel
         </h1>
@@ -136,46 +140,13 @@ export default function Home() {
           <li>Where dates are you traveling</li>
         </ol>
         <div className="container mt-3 flex flex-col items-center justify-center text-center xl:max-w-5xl">
-          <Select
-            options={["Airbnb"]}
-            placeholder="Which page do you want to scrap"
-          />
-          <Select
-            className="mt-2"
-            placeholder="Where is you going?"
-            options={["Figueira-da-Foz"]}
-          />
-          <div className="mt-2 flex w-full flex-row">
-            <Input type="date" className="mr-1" />
-            <Input type="date" className="ml-1" />
-          </div>
-
-          <Button
-            className="mt-2"
-            onClick={
-              loading
-                ? null
-                : async () => {
-                    setLoading(true);
-                    setAirbnbData([]);
-                    const response = await fetch("/api/airbnb", {
-                      method: "POST",
-                      body: JSON.stringify({ city: "Figueira-da-Foz" }),
-                    });
-                    const data = await response.json();
-                    setAirbnbData(data.places);
-                    setLoading(false);
-                  }
-            }
-          >
-            Run scrapper
-          </Button>
+          <FormScrapper setData={setAirbnbData} />
           <Grid className="my-4">
             {airbnbData.map((place) => (
               <PlaceCard place={place} key={place.link} />
             ))}
           </Grid>
-          <section className="my-2 mb-4 w-full">
+          {/* <section className="my-2 mb-4 w-full">
             {[].map(({ company, dates }) => {
               return (
                 <div key={company}>
@@ -225,7 +196,7 @@ export default function Home() {
                 </div>
               );
             })}
-          </section>
+          </section> */}
         </div>
       </main>
     </>

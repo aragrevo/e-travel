@@ -18,7 +18,9 @@
       "@business/*": ["./business/*"],
       "@pages/*": ["./pages/*"],
       "@model/*": ["./model/*"],
-      "@components/*": ["./components/*"]
+      "@components/*": ["./components/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@utils/*": ["./utils/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

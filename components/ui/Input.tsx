@@ -7,6 +7,7 @@ interface Props extends FCClassName {
   value?: string;
   type?: string;
   onClick?: () => void;
+  onChange: (value: string) => void;
 }
 
 export const Input: FC<Props> = ({
@@ -16,6 +17,7 @@ export const Input: FC<Props> = ({
   type = "text",
   value,
   onClick,
+  onChange,
 }) => {
   return (
     <input
@@ -23,7 +25,11 @@ export const Input: FC<Props> = ({
       value={value}
       readOnly={disabled}
       placeholder={placeholder}
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick && onClick();
+      }}
+      onChange={(e) => onChange(e.target.value)}
       className={
         className +
         " relative h-8 w-full rounded-md border-2 bg-transparent px-2 text-sm focus:outline-none focus:ring-2 dark:border-gray-300 dark:text-slate-300"
