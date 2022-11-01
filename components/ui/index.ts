@@ -7,3 +7,4 @@ export { Layout } from "./Layout";
 export { Navbar } from "./Navbar";
 export { Select } from "./Select";
 export { Switch } from "./Switch";
+export { Table } from "./Table";

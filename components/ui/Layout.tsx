@@ -16,7 +16,7 @@ export const Layout: FC<Props> = ({ children }) => {
       </Head>
       <main className="flex min-h-screen flex-1 flex-col items-center justify-center bg-white dark:bg-gray-900">
         <Navbar />
-        <div className="container mt-12 flex flex-col items-center justify-center text-center xl:max-w-5xl">
+        <div className="container mt-12 mb-8 flex flex-col items-center justify-center text-center xl:max-w-5xl">
           {children}
         </div>
       </main>

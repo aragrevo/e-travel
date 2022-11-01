@@ -15,35 +15,31 @@ export const Switch: FC<Props> = ({ action, className }) => {
             <li className="-mb-px flex-auto text-center">
               <button
                 className={
-                  "block rounded-l px-2 py-1 text-xs font-bold uppercase shadow transition-all " +
-                  (openTab === false
-                    ? "bg-black text-white"
-                    : "bg-white text-black")
+                  "block rounded-l border-black bg-black px-2 py-1 text-xs shadow transition-all duration-200 " +
+                  (openTab === false ? "border opacity-100" : "opacity-50")
                 }
                 onClick={(e) => {
                   e.preventDefault();
                   setOpenTab(false);
-                  action(false);
+                  action(true);
                 }}
               >
-                <i className="fas fa-space-shuttle mr-1 text-base"></i> Off
+                🌙
               </button>
             </li>
             <li className="-mb-px flex-auto text-center ">
               <button
                 className={
-                  "block rounded-r px-2 py-1 text-xs font-bold uppercase shadow transition-all " +
-                  (openTab === true
-                    ? "bg-black text-white"
-                    : "bg-white text-black")
+                  "block rounded-r bg-white px-2 py-1 text-xs shadow transition-all duration-200 " +
+                  (openTab === true ? "border opacity-100" : "opacity-50")
                 }
                 onClick={(e) => {
                   e.preventDefault();
                   setOpenTab(true);
-                  action(true);
+                  action(false);
                 }}
               >
-                <i className="fas fa-cog mr-1 text-base"></i> On
+                ☀️
               </button>
             </li>
           </ul>

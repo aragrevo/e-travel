@@ -7,13 +7,18 @@ import { useLocalStorage } from "@hooks/index";
 
 interface Props extends FCClassName {
   setData: (value: Place[]) => any;
+  initialForm: any;
 }
 
 const API_URLS = {
   Airbnb: "/api/airbnb",
 };
 
-export const FormScrapper: FC<Props> = ({ className = "", setData }) => {
+export const FormScrapper: FC<Props> = ({
+  className = "",
+  setData,
+  initialForm,
+}) => {
   const [searches, setSearches] = useLocalStorage<any[]>(
     LocalStorageType.Searches,
     []
@@ -26,6 +31,17 @@ export const FormScrapper: FC<Props> = ({ className = "", setData }) => {
     startDate: "",
     endDate: "",
   });
+
+  useEffect(() => {
+    setForm({
+      page: initialForm.page,
+      location: initialForm.location,
+      startDate: initialForm.startDate,
+      endDate: initialForm.endDate,
+    });
+
+    return () => {};
+  }, [initialForm]);
 
   useEffect(() => {
     const first = searches[0];

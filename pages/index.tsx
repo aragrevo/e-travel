@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Grid, Layout } from "@components/ui";
 import { PlaceCard } from "@components/places";
-import { FormScrapper } from "@components/home";
+import { FormScrapper, SearchList } from "@components/home";
 
 import { useLocalStorage } from "@hooks/index";
 
@@ -110,12 +110,12 @@ const flights: Flight[] = [
 
 export default function Home() {
   const [airbnbData, setAirbnbData] = useState<Place[]>([]);
+  const [search, setSearch] = useState({});
   const [favorites, setFavorites] = useLocalStorage<Place[]>(
     LocalStorageType.Favorites,
     []
   );
 
-  // TODO: list searches
   // TODO: get euro price
   return (
     <Layout>
@@ -128,7 +128,7 @@ export default function Home() {
         <li>Where dates are you traveling</li>
       </ol>
       <div className="container mt-3 flex flex-col items-center justify-center text-center xl:max-w-5xl">
-        <FormScrapper setData={setAirbnbData} />
+        <FormScrapper setData={setAirbnbData} initialForm={search} />
         <Grid className="my-4">
           {airbnbData.map((place) => (
             <PlaceCard
@@ -145,58 +145,7 @@ export default function Home() {
             />
           ))}
         </Grid>
-
-        {/* <section className="my-2 mb-4 w-full">
-            {[].map(({ company, dates }) => {
-              return (
-                <div key={company}>
-                  <h3 className="mt-2 border-x border-t bg-slate-50 py-1 text-sm font-bold uppercase dark:border-slate-800 dark:bg-slate-700 dark:text-slate-300">
-                    {company}
-                  </h3>
-                  <table className=" w-full rounded-md border text-sm dark:border-slate-800 dark:bg-transparent dark:text-slate-300">
-                    <thead>
-                      <tr className="w-full">
-                        <th className="">Date</th>
-                        <th className="border-r dark:border-slate-800">Day</th>
-                        <th>Passengers</th>
-                        <th className="w-1/4">Price</th>
-                        <th className="w-1/4">Individual Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dates
-                        .sort((a, b) => +b.date - +a.date)
-                        .map(({ date, data }) => {
-                          return data.map(({ passengers, price }, i) => (
-                            <tr
-                              className="border-t dark:border-slate-800"
-                              key={date + company + i}
-                            >
-                              {i === 0 && (
-                                <>
-                                  <td rowSpan={data.length}>
-                                    {formatDate(date)}
-                                  </td>
-                                  <td
-                                    rowSpan={data.length}
-                                    className="border-r dark:border-slate-800"
-                                  >
-                                    {getWeekDay(date)}
-                                  </td>
-                                </>
-                              )}
-                              <td>{passengers}</td>
-                              <td>{toCurrency(price)}</td>
-                              <td>{toCurrency(price / passengers)}</td>
-                            </tr>
-                          ));
-                        })}
-                    </tbody>
-                  </table>
-                </div>
-              );
-            })}
-          </section> */}
+        <SearchList onSelectRow={(v) => setSearch(v)} />
       </div>
     </Layout>
   );

@@ -26,7 +26,7 @@ export const Navbar = () => {
         <Link
           className={`${
             router.asPath === path ? "after:scale-x-100" : "after:scale-x-0"
-          } relative mx-2 py-2.5 transition-all after:absolute after:bottom-0 after:left-0 after:w-full after:border-b-2 after:border-black after:transition-all after:duration-700 after:content-['']`}
+          } relative mx-2 py-2 transition-all after:absolute after:bottom-0 after:left-0 after:w-full after:border-b-2 after:border-black after:transition-all after:duration-700 after:content-['']`}
           href={path}
           key={path}
         >
