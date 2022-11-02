@@ -17,7 +17,6 @@ const columns = [
 
 export const SearchList: FC<Props> = ({ className = "", onSelectRow }) => {
   const [searches] = useLocalStorage<any[]>(LocalStorageType.Searches, []);
-
   return (
     <section className={`${className} w-full`}>
       <h1 className="mb-2 text-xl font-bold dark:text-white">Lasts search</h1>

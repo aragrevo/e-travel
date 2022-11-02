@@ -22,7 +22,7 @@ export const Alert: FC<Props> = ({ title, message, show, onClose }) => {
 
   return (
     <div
-      className={` absolute top-0 right-0 mb-4 -translate-x-0.5 rounded border-0 bg-red-500 px-6 py-4 text-white transition-all duration-300 ${
+      className={` absolute top-0 right-0 z-50 mb-4 -translate-x-0.5 rounded border-0 bg-red-500 px-6 py-4 text-white transition-all duration-300 ${
         show ? "translate-y-0.5" : "-translate-y-96"
       }`}
     >

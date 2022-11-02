@@ -110,7 +110,12 @@ const flights: Flight[] = [
 
 export default function Home() {
   const [airbnbData, setAirbnbData] = useState<Place[]>([]);
-  const [search, setSearch] = useState({});
+  const [search, setSearch] = useState({
+    page: "",
+    location: null,
+    startDate: "",
+    endDate: "",
+  });
   const [favorites, setFavorites] = useLocalStorage<Place[]>(
     LocalStorageType.Favorites,
     []

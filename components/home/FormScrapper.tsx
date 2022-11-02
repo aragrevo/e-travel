@@ -1,18 +1,26 @@
 import { FC, useEffect, useState } from "react";
-import { Alert, Button, Input, Select } from "@components/ui";
+import { Alert, Autocomplete, Button, Input, Select } from "@components/ui";
 import { FCClassName } from "@model/fc-classname";
 import { Place } from "@model/place";
 import { LocalStorageType } from "@model/local-storage-types";
 import { useLocalStorage } from "@hooks/index";
+import { KeyValuePair } from "@model/key-value-pair";
 
 interface Props extends FCClassName {
   setData: (value: Place[]) => any;
-  initialForm: any;
+  initialForm: FormData;
 }
 
 const API_URLS = {
   Airbnb: "/api/airbnb",
 };
+
+interface FormData {
+  page: string;
+  location: KeyValuePair | null;
+  startDate: string;
+  endDate: string;
+}
 
 export const FormScrapper: FC<Props> = ({
   className = "",
@@ -25,9 +33,9 @@ export const FormScrapper: FC<Props> = ({
   );
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormData>({
     page: "",
-    location: "",
+    location: null,
     startDate: "",
     endDate: "",
   });
@@ -58,7 +66,7 @@ export const FormScrapper: FC<Props> = ({
 
   const saveSearch = () => {
     const { page, location, startDate, endDate } = form;
-    const id = `${location}${startDate}${endDate}`;
+    const id = `${location!.key}${startDate}${endDate}`;
     const newList = searches.filter((f) => f.id !== id);
     newList.unshift({
       id,
@@ -70,23 +78,22 @@ export const FormScrapper: FC<Props> = ({
     setSearches(newList);
   };
 
-  const fillForm = (val: string, field: string) => {
+  const fillForm = (val: string | KeyValuePair, field: string) => {
     setForm((prev) => ({ ...prev, [field]: val }));
   };
   return (
     <section className={`${className} w-full`}>
       <Select
-        options={["Airbnb"]}
+        options={[{ key: "Airbnb", value: "Airbnb" }]}
         placeholder="Which page do you want to scrap"
         value={form.page}
         onChange={(val) => fillForm(val, "page")}
       />
-      <Select
-        className="mt-2"
+      <Autocomplete
         placeholder="Where is you going?"
-        options={["Figueira-da-Foz"]}
-        value={form.location}
-        onChange={(val) => fillForm(val, "location")}
+        className="mt-2"
+        initialValue={form.location?.value || ""}
+        onChange={(loc) => fillForm(loc, "location")}
       />
       <div className="mt-2 flex w-full flex-row">
         <Input
@@ -124,7 +131,7 @@ export const FormScrapper: FC<Props> = ({
                 setData([]);
                 saveSearch();
                 const { page, location, startDate, endDate } = form;
-                const api: string = API_URLS[page];
+                const api: string = API_URLS[page as keyof typeof API_URLS];
                 const response = await fetch(api || "", {
                   method: "POST",
                   body: JSON.stringify({

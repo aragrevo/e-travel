@@ -32,7 +32,9 @@ export const Table: FC<Props> = ({
             onClick={() => onRowClick && onRowClick(s)}
           >
             {columns.map(({ key }) => (
-              <td key={"row" + key}>{s[key]}</td>
+              <td key={"row" + key}>
+                {typeof s[key] === "string" ? s[key] : s[key]["value"]}
+              </td>
             ))}
           </tr>
         ))}

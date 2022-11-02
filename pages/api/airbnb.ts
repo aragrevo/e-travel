@@ -60,10 +60,10 @@ const scrapper = async (page: Page) => {
 };
 
 const getPlaces = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  let browser: Browser;
+  let browser;
   try {
     const { city, startDate, endDate } = JSON.parse(req.body);
-    const url = `${baseUrl}/s/${city}/homes?place_id=ChIJQZzvPeA3Ig0R3vSp3Zgijoc&refinement_paths%5B%5D=%2Fhomes&checkin=${startDate}&checkout=${endDate}&date_picker_type=calendar&adults=2&children=1&search_type=filter_change&tab_id=home_tab&query=${city}&flexible_trip_lengths%5B%5D=one_week&price_filter_num_nights=14&source=structured_search_input_header&price_max=66`;
+    const url = `${baseUrl}/s/${city.value}/homes?place_id=${city.key}&refinement_paths%5B%5D=%2Fhomes&checkin=${startDate}&checkout=${endDate}&date_picker_type=calendar&adults=2&children=1&search_type=filter_change&tab_id=home_tab&query=${city.value}&flexible_trip_lengths%5B%5D=one_week&price_filter_num_nights=14&source=structured_search_input_header&price_max=66`;
     browser = await playwright.chromium.launch({
       headless: true, // set this to true
     });
